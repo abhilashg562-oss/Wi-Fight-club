@@ -16,11 +16,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.pennywiseai.tracker.ui.components.PennyWiseScaffold
-
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import java.math.BigDecimal
 @Composable
 fun SpendSenseScreen(
-    onNavigateBack: () -> Unit
-) {
+    onNavigateBack: () -> Unit,
+    viewModel: SpendSenseViewModel = hiltViewModel()
+) {val state by viewModel.uiState.collectAsState()
     PennyWiseScaffold(
         title = "SpendSense",
         navigationIcon = {
@@ -72,9 +76,11 @@ fun SpendSenseScreen(
                 icon = Icons.Filled.ArrowUpward,
                 iconColor = Color(0xFF2979FF),
                 title = "Income",
-                lastMonth = "₹30,000",
-                thisMonth = "₹20,000",
-                badgeText = "+65% Growth",
+                lastMonth = "₹${state.incomeLastMonth}",
+                thisMonth = "₹${state.incomeThisMonth}",
+                badgeText = growthText(
+                    state.incomeLastMonth,
+                    state.incomeThisMonth),
                 badgeColor = Color(0xFF2E7D32),
                 description = "Income increased significantly — track where the extra amount goes."
             )
@@ -86,9 +92,12 @@ fun SpendSenseScreen(
                 icon = Icons.Filled.ArrowDownward,
                 iconColor = Color(0xFFD32F2F),
                 title = "Expenses",
-                lastMonth = "₹32,000",
-                thisMonth = "₹10,000",
-                badgeText = "-37.5% Reduced",
+                lastMonth = "₹${state.expenseLastMonth}",
+                thisMonth = "₹${state.expenseThisMonth}",
+                badgeText = growthText(
+                    state.expenseLastMonth,
+                    state.expenseThisMonth
+                ),
                 badgeColor = Color(0xFFD32F2F),
                 description = "Spending dropped — excellent! Keep reducing non-essential categories."
             )
@@ -100,9 +109,12 @@ fun SpendSenseScreen(
                 icon = Icons.Filled.Savings,
                 iconColor = Color(0xFF388E3C),
                 title = "Savings",
-                lastMonth = "₹3,000",
-                thisMonth = "28",
-                badgeText = "+45% Growth",
+                lastMonth = "₹${state.savingsLastMonth}",
+                thisMonth = "₹${state.savingsThisMonth}",
+                badgeText = growthText(
+                    state.savingsLastMonth,
+                    state.savingsThisMonth
+                ),
                 badgeColor = Color(0xFF388E3C),
                 description = "Amazing improvement — your savings grew a lot."
             )
@@ -222,5 +234,17 @@ fun SummaryCard(
                 }
             }
         }
+    }
+}
+fun growthText(last: BigDecimal, current: BigDecimal): String {
+    if (last == BigDecimal.ZERO) return "New"
+
+    val diff = current - last
+    val percent = (diff.toDouble() / last.toDouble()) * 100
+
+    return if (percent >= 0) {
+        "+${percent.toInt()}% Growth"
+    } else {
+        "${percent.toInt()}% Reduced"
     }
 }
