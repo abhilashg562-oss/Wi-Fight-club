@@ -106,6 +106,7 @@ fun SpendSenseScreen(
                 badgeColor = Color(0xFF388E3C),
                 description = "Amazing improvement — your savings grew a lot."
             )
+
         }
     }
 }
@@ -168,6 +169,58 @@ fun StatCard(
                 style = MaterialTheme.typography.bodySmall,
                 color = Color.Gray
             )
+        }
+    }
+}
+@Composable
+fun SummaryCard(
+    title: String,
+    lastMonth: String,
+    thisMonth: String,
+    chipText: String
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFF1E1E1E)
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleLarge
+                )
+
+                AssistChip(
+                    onClick = {},
+                    label = { Text(chipText) }
+                )
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Column {
+                    Text("Last Month", style = MaterialTheme.typography.labelMedium)
+                    Text(lastMonth, style = MaterialTheme.typography.titleMedium)
+                }
+
+                Column(horizontalAlignment = Alignment.End) {
+                    Text("This Month", style = MaterialTheme.typography.labelMedium)
+                    Text(thisMonth, style = MaterialTheme.typography.titleMedium)
+                }
+            }
         }
     }
 }
